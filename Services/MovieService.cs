@@ -9,6 +9,7 @@ namespace Movie_App.Services
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
         private readonly ILogger<MovieService> _logger;
+        private const string ImageBaseUrl = "https://image.tmdb.org/t/p/w500"; // Define the base URL for images
 
         public MovieService(HttpClient httpClient, IConfiguration configuration, ILogger<MovieService> logger)
         {
@@ -49,9 +50,19 @@ namespace Movie_App.Services
                     _logger.LogWarning("No movies found in the API response.");
                     return new List<MovieDto>(); // Return an empty list if no movies found
                 }
+                
+                // Map the full image paths for each movie
+                var moviesWithFullPaths = result.Results.Select(movie => new MovieDto
+                {
+                    Title = movie.Title,
+                    Overview = movie.Overview,
+                    VoteAverage = movie.VoteAverage,
+                    Genres = movie.Genres,
+                    FullPosterPath = $"{ImageBaseUrl}{movie.PosterPath}",
+                    FullBackdropPath = $"{ImageBaseUrl}{movie.BackdropPath}"
+                }).ToList();
 
-                // Return the list of movies or an empty list if none were found
-                return result?.Results ?? new List<MovieDto>();
+                return moviesWithFullPaths; // Return the list with full URLs
             }
             catch (Exception ex)
             {
