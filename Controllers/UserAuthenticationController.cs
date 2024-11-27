@@ -13,21 +13,23 @@ public class UserAuthenticationController : Controller
     {
         this.authService = authService;
     }
-    //public async Task<IActionResult> Register()
-    //{
-    //    var model = new RegistrationModel
-    //    {
-    //        Email = "admin@gmail.com",
-    //        Username = "admin",
-    //        Name = "Ravindra",
-    //        Password = "Admin@123",
-    //        PasswordConfirm = "Admin@123",
-    //        Role = "Admin"
-    //    };
-    //    // if you want to register with user , Change Role="User"
-    //    var result = await authService.RegisterAsync(model);
-    //    return Ok(result.Message);
-    //}
+    [HttpPost]
+    public async Task<IActionResult> Register()
+    {
+        var model = new RegistrationModel
+        {
+            Email = "francisgbohunmi@gmail.com",
+            Username = "admin",
+            Name = "Francis",
+            Password = "francis123",
+            PasswordConfirm = "francis123",
+            Role = "Admin"
+        };
+        // if you want to register with user, change Role="User"
+        var result = await authService.RegisterAsync(model);
+        return Ok(result.Message);
+    }
+
 
     [HttpGet]
     public IActionResult Login()

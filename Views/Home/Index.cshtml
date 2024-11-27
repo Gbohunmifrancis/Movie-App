@@ -1,154 +1,40 @@
-@model List<Movie_App.Models.DTO.MovieDto>
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
-    </div>
+@model Movie_App.Models.DTO.MovieListVm
+@{
+    Layout = "_Layout";
 }
-
-<div class="movie-grid">
-    @foreach (var movie in Model)
-    {
-        <div class="movie-card" style="background-image: url('@movie.FullBackdropPath');">
-            <div class="overlay">
-                <div class="movie-poster">
-                    <img src="@movie.FullPosterPath" alt="@movie.Title" />
-                    <div class="rating-badge">@movie.VoteAverage.ToString("N0")%</div>
-                </div>
-                <h3>@movie.Title</h3>
-                <p>@movie.Overview</p>
-                <p class="genres">@string.Join(", ", movie.Genres)</p>
+<section class="search-bar">
+    <form method="get" asp-action="Index">
+        <input type="text" name="term" placeholder="search here">
+        <button type="submit"><i class="fa fa-search"></i></button>
+        <a class="btn btn-default" href="/Home/Index">All</a>
+    </form>
+</section>
+<section class="movies">
+    @foreach(var movie in Model.MovieList){
+        <div class="movie-card" onclick="window.location.href='/Home/MovieDetail?movieId=@movie.Id'">
+            <div class="movie-image">
+                <img src="/Uploads/@movie.MovieImage">
+            </div>
+            <div class="movie-info">
+                <h4>@movie.Title</h4>
+                <h4>@movie.GenreNames</h4>
+                <h4>@movie.ReleaseYear</h4>
+                @* <h4>Cast : @movie.Cast</h4>
+            <h4>Director : @movie.Director</h4>*@
             </div>
         </div>
     }
-</div>
+</section>
 
-<!-- Pagination Controls -->
 <div class="pagination">
-    @if (ViewBag.CurrentPage > 1)
-    {
-        <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1, pageSize = ViewBag.PageSize })" class="page-link">Previous</a>
-    }
+    @for(int i=1;i<=Model.TotalPages;i++){
+        if(i==Model.CurrentPage){
+            <a href="/Home/Index?currentPage=@i&term=@Model.Term" class="active">@i</a>
+        }
+        else{
+            <a href="/Home/Index?currentPage=@i&term=@Model.Term">@i</a>
 
-    @for (int i = 1; i <= ViewBag.TotalPages; i++)
-    {
-        <a href="@Url.Action("Index", new { page = i, pageSize = ViewBag.PageSize })" 
-           class="page-link @(i == ViewBag.CurrentPage ? "active" : "")">
-           @i
-        </a>
+        }
     }
-
-    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-    {
-        <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1, pageSize = ViewBag.PageSize })" class="page-link">Next</a>
-    }
+   
 </div>
-
-<!-- Styling for Movie Cards and Pagination -->
-<style>
-    /* Layout */
-    .movie-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        justify-content: space-between;
-        padding: 20px;
-    }
-
-    .movie-card {
-        position: relative;
-        width: 220px;
-        height: 350px; /* Adjust height as needed */
-        background-size: cover;
-        background-position: center;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        transition: transform 0.3s ease;
-        text-align: center;
-        color: #fff;
-    }
-    .movie-card:hover {
-        transform: scale(1.05);
-    }
-
-    /* Overlay to make text readable */
-    .overlay {
-        position: absolute;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.6); /* Black with transparency */
-        width: 100%;
-        padding: 10px;
-    }
-
-    /* Image and Rating Badge */
-    .movie-poster {
-        position: relative;
-        margin-bottom: 10px;
-    }
-
-    .movie-poster img {
-        width: 100%;
-        height: auto;
-        border-radius: 4px;
-    }
-
-    .rating-badge {
-        position: absolute;
-        bottom: 5px;
-        left: 5px;
-        background-color: #28a745;
-        color: #fff;
-        font-size: 14px;
-        font-weight: bold;
-        padding: 5px 10px;
-        border-radius: 50%;
-    }
-
-    /* Text and Genre Styling */
-    h3 {
-        font-size: 1.2rem;
-        color: #fff;
-        margin: 10px 0 5px;
-    }
-
-    .genres {
-        font-size: 0.85rem;
-        color: #ddd;
-        margin-top: 10px;
-    }
-
-    /* General */
-    p {
-        font-size: 0.9rem;
-        color: #ccc;
-        margin: 5px 0;
-        line-height: 1.4;
-    }
-
-    /* Pagination */
-    .pagination {
-        margin-top: 20px;
-        display: flex;
-        justify-content: flex-end;
-        padding: 10px 20px;
-    }
-    .page-link {
-        padding: 8px 12px;
-        margin: 0 5px;
-        color: #007bff;
-        text-decoration: none;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-    .page-link.active {
-        background-color: #007bff;
-        color: #28a745;
-        border: 1px solid #007bff;
-    }
-    .page-link:hover {
-        background-color: #0056b3;
-        color: #28a745;
-    }
-</style>

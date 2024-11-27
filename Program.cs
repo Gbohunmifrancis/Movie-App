@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Movie_App.Models.Domain;
 using Movie_App.Repositories.Abstract;
 using Movie_App.Repositories.Implementations;
-using Movie_App.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -11,8 +10,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
-builder.Services.AddHttpClient<MovieService>();
-builder.Services.AddHttpClient<MovieService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
+builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IMovieService, MovieService>();
+
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<DatabaseContext>()
     .AddDefaultTokenProviders();
