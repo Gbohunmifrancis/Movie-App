@@ -3,6 +3,10 @@
 **Version:** 1.0  
 **Description:** A Movie Management System that allows managing genres, movies, and user authentication through RESTful API endpoints. This project is built to handle core operations such as adding, editing, listing, and deleting data.
 
+
+![image](https://github.com/user-attachments/assets/eb1ef2d3-e9ef-4928-921d-107fc785f338)
+
+
 ## Table of Contents
 - [Features](#features)
 - [Technologies](#technologies)
